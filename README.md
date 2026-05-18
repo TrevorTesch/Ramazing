@@ -20,8 +20,6 @@
 - 📋 Easy & Accessible Menu to access pages
 - 🔗 Added direct page access. Ex: shadow://settings shadow://new
 - 🔄 WispURL Change
-
-## Deployment
 <a href="https://render.com/deploy?repo=https://github.com/ShadowDevLabs/ShadowV3">
   <img src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/main/buttons/official/render.svg" alt="Deploy on Render">
 </a>

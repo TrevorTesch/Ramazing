@@ -1,6 +1,7 @@
 import { HistoryHelper } from "/assets/js/history_helper.js";
 import { SettingsManager } from "/assets/js/settings_manager.js";
 import { BareMuxConnection } from "/baremux/index.mjs";
+import { resolveUrl } from "/assets/js/dns.js";
 const searchInput = document.getElementById("__shadow-search-bar");
 const addTabButton = document.getElementById("add-tab");
 
@@ -96,6 +97,7 @@ class Tab {
     if (broken && await this.brokenDisclaimer(broken)) {
       src = broken;
     };
+    src = await resolveUrl(src);
     await this.setTransport();
     src = self.search(src.trim(), this.searchEngine, this.backend);
     this.tabsArr[i].iframe.src = src;

@@ -14,6 +14,7 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { join } from "path";
 import { users, port, brokenSites } from "./config.js";
 import session from "express-session";
+import { encryptData, decryptData, generateToken as generateSecureToken, verifyPassword, hashPassword } from "./encryption.js";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,7 +23,16 @@ const version = process.env.npm_package_version;
 const publicPath = fileURLToPath(new URL("./public/", import.meta.url));
 const app = express();
 const server = createServer();
-if (Object.keys(users).length > 0) app.use(basicAuth({ users, challenge: true }));
+
+// Enable basic auth if users are configured
+if (Object.keys(users).length > 0) {
+    app.use(basicAuth({ 
+        users, 
+        challenge: true,
+        unauthorizedResponse: 'Unauthorized: Please provide valid credentials'
+    }));
+    console.log('✓ Authentication enabled');
+}
 app.use(express.static(publicPath, { maxAge: 604800000 })); //1 week
 app.use('/books/files/', (req, res) => {
     const sourceUrl = `http://phantom.lol/books/files${req.url}`;
@@ -93,19 +103,30 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "putyoursecretkeyhere",
+  secret: process.env.SESSION_SECRET || generateSecureToken(32),
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 1000 * 60 * 30
-  }
+    maxAge: 1000 * 60 * 30,
+    path: '/'
+  },
+  name: 'shadow.session'
 }));
 
+// Add security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
+
 const { generateToken, validateRequest } = doubleCsrf({
-  getSecret: () => "your-secret-key",
+  getSecret: () => process.env.CSRF_SECRET || generateSecureToken(32),
   cookieName: undefined,
   size: 64,
   getTokenFromRequest: (req) => req.headers["x-csrf-token"]
