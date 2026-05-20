@@ -5,7 +5,7 @@ dotenv.config();
 
 // Add users here - passwords will be hashed
 const rawUsers = {
-    // Example: 'admin': 'Skootyshooty14'
+    // Example: 'admin': '1234567890'
     //' 
 };
 
