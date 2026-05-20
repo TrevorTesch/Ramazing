@@ -17,5 +17,5 @@ const requestListener = async function (req, res) {
 
 const server = http.createServer(requestListener);
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Ramazing is running on port ${port}`);
 });
