@@ -98,10 +98,12 @@ function addMsg(content, role, isLoading = false) {
 
     if (isLoading) {
         msgElement.classList.add('loading');
-        msgElement.innerHTML = `
-            <div class="spinner"></div>
-            ${content}
-        `;
+        const spinner = document.createElement('div');
+        spinner.classList.add('spinner');
+        msgElement.appendChild(spinner);
+        if (content) {
+            msgElement.appendChild(document.createTextNode(content));
+        }
     } else {
         msgElement.innerHTML = marked(content); 
     }
