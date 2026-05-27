@@ -143,7 +143,9 @@ class Tab {
     tab.img.className = "tab-icon";
     tab.img.alt = "Favicon"
     if (tab.src.startsWith('shadow://')) {
-      const favicon = `/assets/imgs/icons/pages/${tab.src.replace('shadow://', '')}.png`;
+      const pageName = tab.src.replace('shadow://', '');
+      const safePageName = /^[a-zA-Z0-9_-]+$/.test(pageName) ? pageName : "new";
+      const favicon = `/assets/imgs/icons/pages/${safePageName}.png`;
       tab.img.src = favicon;
     }
 
