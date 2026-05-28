@@ -30,6 +30,19 @@ import { SettingsManager } from "./settings_manager.js";
     icon: "/assets/imgs/icons/logo.png",
   };
 
+  function sanitizeFaviconUrl(icon) {
+    if (!icon) return "";
+    var trimmedIcon = icon.trim();
+    if (!trimmedIcon) return "";
+    try {
+      var parsed = new URL(trimmedIcon, window.location.origin);
+      if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+        return parsed.href;
+      }
+    } catch (_) { }
+    return "";
+  }
+
   self.setTitle = async function (title = "") {
     if (title) {
       document.title = title;
@@ -55,8 +68,9 @@ import { SettingsManager } from "./settings_manager.js";
   }
 
   self.setFavicon = async function (icon) {
-    if (icon) {
-      document.querySelector("link[rel='icon']").href = icon;
+    var safeIcon = sanitizeFaviconUrl(icon);
+    if (safeIcon) {
+      document.querySelector("link[rel='icon']").href = safeIcon;
     } else {
       document.querySelector("link[rel='icon']").href = settingsDefaultTab.icon;
     }
@@ -70,8 +84,8 @@ import { SettingsManager } from "./settings_manager.js";
     } else {
       var tabData = {};
     }
-    if (icon) {
-      tabData.icon = icon;
+    if (safeIcon) {
+      tabData.icon = safeIcon;
     } else {
       delete tabData.icon;
     }
