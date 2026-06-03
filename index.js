@@ -167,7 +167,7 @@ app.use((req, res, next) => {
 
 const { generateToken, validateRequest } = doubleCsrf({
   getSecret: () => process.env.CSRF_SECRET || generateSecureToken(32),
-  cookieName: undefined,
+  cookieName: "shadow.csrf",
   size: 64,
   getTokenFromRequest: (req) => req.headers["x-csrf-token"]
 });
@@ -184,6 +184,15 @@ const csrfProtection = (req, res, next) => {
     });
   }
 };
+
+// Apply CSRF protection to state-changing requests, excluding token bootstrap
+app.use((req, res, next) => {
+  if (req.path === "/csrf-token") return next();
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    return csrfProtection(req, res, next);
+  }
+  next();
+});
 
 function requireSession(req, res, next) {
   if (req.session?.hasSession) return next();
