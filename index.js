@@ -156,6 +156,17 @@ app.use(session({
   name: 'shadow.session'
 }));
 
+const { generateToken, doubleCsrfProtection: csrfProtection } = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || "csrf-secret-change-me",
+  cookieName: "__Host-psifi.x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    path: "/"
+  }
+});
+
 // Add security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
