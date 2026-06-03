@@ -126,7 +126,8 @@ document
     });
     async function edited() {
       selectedShortcut.querySelector("p").textContent = editNameInput.value;
-      const newURL = editUrlInput.value;
+      const newURL = sanitizeShortcutUrl(editUrlInput.value);
+      editUrlInput.value = newURL;
       selectedShortcut.setAttribute("data-url", newURL);
       const newImgSrc = `https://www.google.com/s2/favassets/imgs/icons?domain=${newURL}&sz=64`;
       selectedShortcut.querySelector("img").src = newImgSrc;
@@ -162,6 +163,16 @@ document
       await settings.set("shortcuts", updatedShortcuts);
     }
   });
+
+function sanitizeShortcutUrl(rawUrl) {
+  try {
+    const parsed = new URL(rawUrl, window.location.origin);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch (_) {}
+  return "about:blank";
+}
 
 function handleShortcutClick(event) {
   event.preventDefault();
