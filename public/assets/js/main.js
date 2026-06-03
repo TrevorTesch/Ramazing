@@ -42,13 +42,24 @@ async function addShortcutClicked() {
     return;
   }
   const name = shortcutName.value;
-  const url = shortcutUrl.value;
+  const url = shortcutUrl.value.trim();
   if (name && url) {
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch (e) {
+      alert("Please enter a valid URL.");
+      return;
+    }
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      alert("Only http(s) URLs are allowed.");
+      return;
+    }
     const newShortcut = document.createElement("a");
     newShortcut.className = "shortcut";
-    const domain = url;
+    const domain = parsedUrl.hostname;
     const size = 64;
-    const imgSrc = `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
+    const imgSrc = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=${size}`;
     const img = document.createElement("img");
     img.src = imgSrc;
     img.alt = name;
