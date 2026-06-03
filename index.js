@@ -36,18 +36,38 @@ if (Object.keys(users).length > 0) {
 app.use(express.static(publicPath, { maxAge: 604800000 })); //1 week
 app.use('/books/files/', (req, res) => {
     const baseUrl = new URL("http://phantom.lol/books/files/");
-    const relativePath = req.path.replace(/^\/books\/files\/?/, "");
+    const routePath = req.path.replace(/^\/books\/files\/?/, "");
+
+    let relativePath;
+    try {
+        relativePath = decodeURIComponent(routePath);
+    } catch {
+        res.status(400).end("Invalid file path");
+        return;
+    }
 
     if (
+        !relativePath ||
         relativePath.includes("..") ||
         relativePath.includes("\\") ||
-        relativePath.includes("\0")
+        relativePath.includes("\0") ||
+        relativePath.startsWith("/") ||
+        relativePath.startsWith("//") ||
+        /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(relativePath)
     ) {
         res.status(400).end("Invalid file path");
         return;
     }
 
     const sourceUrl = new URL(relativePath, baseUrl);
+    if (
+        sourceUrl.origin !== baseUrl.origin ||
+        !sourceUrl.pathname.startsWith("/books/files/")
+    ) {
+        res.status(400).end("Invalid file path");
+        return;
+    }
+
     const queryString = new URLSearchParams(req.query).toString();
     if (queryString) {
         sourceUrl.search = queryString;
