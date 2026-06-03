@@ -49,10 +49,13 @@ async function addShortcutClicked() {
     const domain = url;
     const size = 64;
     const imgSrc = `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
-    newShortcut.innerHTML = `
-        <img src="${imgSrc}">
-        <p>${name}</p>
-      `;
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.alt = name;
+    const label = document.createElement("p");
+    label.textContent = name;
+    newShortcut.appendChild(img);
+    newShortcut.appendChild(label);
     newShortcut.setAttribute("data-url", url);
     shortcutsContainer.insertBefore(newShortcut, addShortcutButton);
     const shortcuts = await settings.get("shortcuts") || [];
@@ -78,10 +81,13 @@ async function loadShortcuts() {
     const domain = url;
     const size = 64;
     const imgSrc = icon || `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
-    newShortcut.innerHTML = `
-      <img src="${imgSrc}">
-      <p>${name}</p>
-    `;
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.alt = name;
+    const label = document.createElement("p");
+    label.textContent = name;
+    newShortcut.appendChild(img);
+    newShortcut.appendChild(label);
     newShortcut.setAttribute("data-url", url);
     shortcutsContainer.insertBefore(newShortcut, addShortcutButton);
   });
