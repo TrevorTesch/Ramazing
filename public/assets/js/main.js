@@ -42,17 +42,31 @@ async function addShortcutClicked() {
     return;
   }
   const name = shortcutName.value;
-  const url = shortcutUrl.value;
+  const url = shortcutUrl.value.trim();
   if (name && url) {
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch (e) {
+      alert("Please enter a valid URL.");
+      return;
+    }
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      alert("Only http(s) URLs are allowed.");
+      return;
+    }
     const newShortcut = document.createElement("a");
     newShortcut.className = "shortcut";
-    const domain = url;
+    const domain = parsedUrl.hostname;
     const size = 64;
-    const imgSrc = `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
-    newShortcut.innerHTML = `
-        <img src="${imgSrc}">
-        <p>${name}</p>
-      `;
+    const imgSrc = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=${size}`;
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.alt = name;
+    const label = document.createElement("p");
+    label.textContent = name;
+    newShortcut.appendChild(img);
+    newShortcut.appendChild(label);
     newShortcut.setAttribute("data-url", url);
     shortcutsContainer.insertBefore(newShortcut, addShortcutButton);
     const shortcuts = await settings.get("shortcuts") || [];
@@ -78,10 +92,13 @@ async function loadShortcuts() {
     const domain = url;
     const size = 64;
     const imgSrc = icon || `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
-    newShortcut.innerHTML = `
-      <img src="${imgSrc}">
-      <p>${name}</p>
-    `;
+    const img = document.createElement("img");
+    img.src = imgSrc;
+    img.alt = name;
+    const label = document.createElement("p");
+    label.textContent = name;
+    newShortcut.appendChild(img);
+    newShortcut.appendChild(label);
     newShortcut.setAttribute("data-url", url);
     shortcutsContainer.insertBefore(newShortcut, addShortcutButton);
   });
@@ -126,7 +143,8 @@ document
     });
     async function edited() {
       selectedShortcut.querySelector("p").textContent = editNameInput.value;
-      const newURL = editUrlInput.value;
+      const newURL = sanitizeShortcutUrl(editUrlInput.value);
+      editUrlInput.value = newURL;
       selectedShortcut.setAttribute("data-url", newURL);
       const newImgSrc = `https://www.google.com/s2/favassets/imgs/icons?domain=${newURL}&sz=64`;
       selectedShortcut.querySelector("img").src = newImgSrc;
@@ -162,6 +180,16 @@ document
       await settings.set("shortcuts", updatedShortcuts);
     }
   });
+
+function sanitizeShortcutUrl(rawUrl) {
+  try {
+    const parsed = new URL(rawUrl, window.location.origin);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch (_) {}
+  return "about:blank";
+}
 
 function handleShortcutClick(event) {
   event.preventDefault();

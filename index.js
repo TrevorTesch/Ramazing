@@ -73,7 +73,18 @@ app.use('/books/files/', (req, res) => {
         sourceUrl.search = queryString;
     }
 
-    http.get(sourceUrl.toString(), (sourceResponse) => {
+    const safeRelativePath = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
+    const queryString = new URLSearchParams(req.query).toString();
+    const upstreamPath = `/books/files/${safeRelativePath}${queryString ? `?${queryString}` : ""}`;
+
+    const requestOptions = {
+        protocol: "http:",
+        hostname: "phantom.lol",
+        method: "GET",
+        path: upstreamPath
+    };
+
+    http.get(requestOptions, (sourceResponse) => {
         res.writeHead(sourceResponse.statusCode, sourceResponse.headers);
         sourceResponse.pipe(res);
     }).on('error', (err) => {
@@ -153,6 +164,17 @@ app.use(session({
   name: 'shadow.session'
 }));
 
+const { generateToken, doubleCsrfProtection: csrfProtection } = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || "csrf-secret-change-me",
+  cookieName: "__Host-psifi.x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    path: "/"
+  }
+});
+
 // Add security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -164,7 +186,7 @@ app.use((req, res, next) => {
 
 const { generateToken, validateRequest } = doubleCsrf({
   getSecret: () => process.env.CSRF_SECRET || generateSecureToken(32),
-  cookieName: undefined,
+  cookieName: "shadow.csrf",
   size: 64,
   getTokenFromRequest: (req) => req.headers["x-csrf-token"]
 });
@@ -181,6 +203,15 @@ const csrfProtection = (req, res, next) => {
     });
   }
 };
+
+// Apply CSRF protection to state-changing requests, excluding token bootstrap
+app.use((req, res, next) => {
+  if (req.path === "/csrf-token") return next();
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    return csrfProtection(req, res, next);
+  }
+  next();
+});
 
 function requireSession(req, res, next) {
   if (req.session?.hasSession) return next();
