@@ -35,7 +35,6 @@ if (Object.keys(users).length > 0) {
 }
 app.use(express.static(publicPath, { maxAge: 604800000 })); //1 week
 app.use('/books/files/', (req, res) => {
-    const baseUrl = new URL("http://phantom.lol/books/files/");
     const routePath = req.path.replace(/^\/books\/files\/?/, "");
 
     let relativePath;
@@ -59,21 +58,25 @@ app.use('/books/files/', (req, res) => {
         return;
     }
 
-    const sourceUrl = new URL(relativePath, baseUrl);
-    if (
-        sourceUrl.origin !== baseUrl.origin ||
-        !sourceUrl.pathname.startsWith("/books/files/")
-    ) {
+    const pathSegments = relativePath.split("/");
+    const segmentPattern = /^[A-Za-z0-9._-]+$/;
+    if (pathSegments.some((segment) => !segment || !segmentPattern.test(segment))) {
         res.status(400).end("Invalid file path");
         return;
     }
 
+    const safeRelativePath = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
     const queryString = new URLSearchParams(req.query).toString();
-    if (queryString) {
-        sourceUrl.search = queryString;
-    }
+    const upstreamPath = `/books/files/${safeRelativePath}${queryString ? `?${queryString}` : ""}`;
 
-    http.get(sourceUrl.toString(), (sourceResponse) => {
+    const requestOptions = {
+        protocol: "http:",
+        hostname: "phantom.lol",
+        method: "GET",
+        path: upstreamPath
+    };
+
+    http.get(requestOptions, (sourceResponse) => {
         res.writeHead(sourceResponse.statusCode, sourceResponse.headers);
         sourceResponse.pipe(res);
     }).on('error', (err) => {
