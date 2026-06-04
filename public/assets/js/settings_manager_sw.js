@@ -2,7 +2,7 @@
 
 class SettingsManager {
     constructor(user, dbName) {
-      this.user = user || "ramazing";
+      this.user = user || "shadow";
       this.dbName = dbName || "settingsDB";
       this.storeName = `${this.user}-settings` || "fluid-settings";
       this.dbPromise = this.initDB();

@@ -1,6 +1,6 @@
 class HistoryHelper {
   constructor(user, dbName) {
-    this.user = user ?? "ramazing";
+    this.user = user ?? "shadow";
     this.dbName = dbName ?? "history";
     this.storeName = `${this.user}-history`;
     this.dbPromise = this.initDB();

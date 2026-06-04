@@ -19,8 +19,8 @@
         }
     },
     {
-        "name": "Ramazing",
-        "value": "ramazing",
+        "name": "Shadow",
+        "value": "shadow",
         "css": {
             "background": "linear-gradient(145deg, #0b0013, #15001f)",
             "home-bg": "url('/assets/imgs/backgrounds/home/purple.jpg')",

@@ -86,7 +86,7 @@ async function sendMsg() {
 
         if (chatHistory.length > chatHistoryLimit) chatHistory.shift();
     } catch {
-        loadingMsg.innerHTML = 'Failed to reach Ramazing Assistant. Try again.';
+        loadingMsg.innerHTML = 'Failed to reach Shadow Assistant. Try again.';
         loadingMsg.classList.remove('loading');
         loadingMsg.classList.add('show');
     }

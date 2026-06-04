@@ -26,7 +26,7 @@ import { SettingsManager } from "./settings_manager.js";
   }
 
   var settingsDefaultTab = {
-    title: "Ramazing",
+    title: "Shadow",
     icon: "/assets/imgs/icons/logo.png",
   };
 

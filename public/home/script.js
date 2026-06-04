@@ -1,6 +1,6 @@
 const getStarted = document.getElementsByClassName("getStarted");
 
 getStarted[0].addEventListener("click", function () {
-  parent.createTab("ramazing://new");
+  parent.createTab("shadow://new");
 });
 

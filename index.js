@@ -161,7 +161,7 @@ app.use(session({
     maxAge: 1000 * 60 * 30,
     path: '/'
   },
-  name: 'ramazing.session'
+  name: 'shadow.session'
 }));
 
 // Add security headers
@@ -175,7 +175,7 @@ app.use((req, res, next) => {
 
 const { generateToken, validateRequest } = doubleCsrf({
     getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || generateSecureToken(32),
-    cookieName: "ramazing.csrf",
+    cookieName: "shadow.csrf",
     size: 64,
     cookieOptions: {
         httpOnly: true,
@@ -291,7 +291,7 @@ server.on("listening", () => {
     const address = server.address();
     console.log(
         "\n\n\n\x1b[35m\x1b[2m\x1b[1m%s\x1b[0m\n",
-        `Ramazing ${version} has started!\nSprinting on port ${address.port}`,
+        `Shadow ${version} has started!\nSprinting on port ${address.port}`,
     );
 
     setTimeout(function () {

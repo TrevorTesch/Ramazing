@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 /**
  * CONFIGURATION
  * The ENCRYPTION_KEY must be exactly 32 characters for AES-256.
- * It is pulled from your .env file in RamazingV3.
+ * It is pulled from your .env file in ShadowV3.
  */
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-secret-key-32-chars-long!'; 
 const IV_LENGTH = 16; 

@@ -53,7 +53,7 @@ h1:hover {
   margin-bottom: 0.75rem;
 }
 
-#__ramazing-search-bar {
+#__shadow-search-bar {
   padding: 16px 28px;
   border: 1px solid var(--border);
   border-radius: 50px;
@@ -69,12 +69,12 @@ h1:hover {
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-#__ramazing-search-bar::placeholder {
+#__shadow-search-bar::placeholder {
   color: var(--text-muted);
   opacity: 0.6;
 }
 
-#__ramazing-search-bar:focus {
+#__shadow-search-bar:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 
@@ -367,11 +367,11 @@ h1:hover {
     gap: 1.5rem;
   }
   
-  #__ramazing-search-bar {
+  #__shadow-search-bar {
     width: 50vw;
   }
   
-  #__ramazing-search-bar:focus {
+  #__shadow-search-bar:focus {
     width: 55vw;
   }
   
@@ -391,11 +391,11 @@ h1:hover {
     font-size: 2rem;
   }
   
-  #__ramazing-search-bar {
+  #__shadow-search-bar {
     width: 70vw;
   }
   
-  #__ramazing-search-bar:focus {
+  #__shadow-search-bar:focus {
     width: 75vw;
   }
 }

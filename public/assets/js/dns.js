@@ -1,5 +1,5 @@
 const DNS_RECORDS_URL = "/dns-records.json";
-const DNS_OVERRIDE_KEY = "ramazing-dns-overrides";
+const DNS_OVERRIDE_KEY = "shadow-dns-overrides";
 let dnsCache = null;
 
 function normalizeDomain(input) {
@@ -53,7 +53,7 @@ export async function resolveUrl(input) {
   if (!trimmed) return trimmed;
 
   // preserve existing routed values
-  if (/^(ramazing:\/\/|\/uv\/service|https?:\/\/|wss?:\/\/)/i.test(trimmed)) {
+  if (/^(shadow:\/\/|\/uv\/service|https?:\/\/|wss?:\/\/)/i.test(trimmed)) {
     return trimmed;
   }
 

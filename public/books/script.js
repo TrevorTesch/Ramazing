@@ -88,7 +88,7 @@ function createGameElement(game) {
 }
 
 function setupSearchFunctionality(container) {
-  const searchBar = document.getElementById("__ramazing-search-bar");
+  const searchBar = document.getElementById("__shadow-search-bar");
 
   let debounceTimeout;
   searchBar.addEventListener("input", () => {

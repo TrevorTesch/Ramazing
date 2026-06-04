@@ -5,7 +5,7 @@
 
 // Import CryptoJS (add <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> to HTML)
 
-const ENCRYPTION_PASSWORD = 'ramazing-browser-local-encryption'; // User can override this
+const ENCRYPTION_PASSWORD = 'shadow-browser-local-encryption'; // User can override this
 
 /**
  * Encrypt and store data in localStorage

@@ -14,7 +14,7 @@
   --active-tab: linear-gradient(145deg, #1e3a8a, var(--secondary));
 }
 
-:root.ramazing {
+:root.shadow {
   --background: linear-gradient(145deg, #0b0013, #15001f);
   --home-bg: url("/assets/imgs/backgrounds/home/purple.jpg");
   --primary: #12001f;

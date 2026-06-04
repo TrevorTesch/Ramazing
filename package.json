@@ -1,7 +1,7 @@
 {
-  "name": "ramazing",
+  "name": "shadow",
   "version": "3.2.1",
-  "description": "Ramazing proxy",
+  "description": "Shadow proxy",
   "type": "module",
   "engines": {
     "npm": ">=7.0.0",
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js 9090",
-    "ramazing": "node index.js",
+    "shadow": "node index.js",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json,html,css}\""
   },
   "keywords": [
