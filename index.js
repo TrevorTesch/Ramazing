@@ -73,8 +73,8 @@ app.use('/books/files/', (req, res) => {
         sourceUrl.search = queryString;
     }
 
+    const pathSegments = relativePath.split('/').filter(Boolean);
     const safeRelativePath = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
-    const queryString = new URLSearchParams(req.query).toString();
     const upstreamPath = `/books/files/${safeRelativePath}${queryString ? `?${queryString}` : ""}`;
 
     const requestOptions = {
@@ -96,7 +96,7 @@ app.use("/epoxy/", express.static(epoxyPath));
 app.use("/libcurl/", express.static(libcurlPath));
 app.use("/baremux/", express.static(baremuxPath));
 app.use("/uv/", express.static(uvPath));
-app.use("/privacy", express.static(publicPath + "/privacy.html"));
+app.get("/privacy", (req, res) => res.sendFile(join(publicPath, "privacy.html")));
 
 app.get("/v1/api/version", (req, res) => {
     if (req.query.v && req.query.v != version) {
@@ -164,17 +164,6 @@ app.use(session({
   name: 'shadow.session'
 }));
 
-const { generateToken, doubleCsrfProtection: csrfProtection } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || "csrf-secret-change-me",
-  cookieName: "__Host-psifi.x-csrf-token",
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-    path: "/"
-  }
-});
-
 // Add security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -185,10 +174,16 @@ app.use((req, res, next) => {
 });
 
 const { generateToken, validateRequest } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || generateSecureToken(32),
-  cookieName: "shadow.csrf",
-  size: 64,
-  getTokenFromRequest: (req) => req.headers["x-csrf-token"]
+    getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || generateSecureToken(32),
+    cookieName: "shadow.csrf",
+    size: 64,
+    cookieOptions: {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        path: "/"
+    },
+    getTokenFromRequest: (req) => req.headers["x-csrf-token"]
 });
 
 // Middleware to protect routes

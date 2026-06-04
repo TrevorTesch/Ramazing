@@ -1,16 +1,19 @@
-// public/js/panic.js
+// public/assets/js/panic.js
 
 (function() {
-    // Customize your settings here
-    const safeSite = 'https://classroom.google.com'; // Where to go
-    const panicKey = '`'; // The key to press (Tilde key, below Esc)
+    const safeSite = 'https://wcpss.instructure.com';
+    const panicKeyCode = 'Equal';
+
+    function redirectToSafeSite() {
+        window.location.replace(safeSite);
+    }
 
     window.addEventListener('keydown', (event) => {
-        if (event.key === panicKey) {
-            // Redirect immediately
-            window.location.href = safeSite;
+        if (event.code === panicKeyCode && !event.altKey && !event.ctrlKey && !event.shiftKey && !event.metaKey) {
+            event.preventDefault();
+            redirectToSafeSite();
         }
     });
 
-    console.log('Panic Key active: Press "' + panicKey + '" to hide this page.');
+    console.log('Panic key active: Press the equal key to hide this page.');
 })();

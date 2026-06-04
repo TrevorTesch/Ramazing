@@ -66,7 +66,7 @@ function abtblank() {
 
     if (!popup || popup.closed) {
       alert(
-        "Allow popups and redirects to hide this from showing up in your history.",
+        "Please allow popups for functional and personalization reasons then refresh.",
       );
     } else {
       const doc = popup.document;
