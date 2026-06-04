@@ -46,7 +46,11 @@
   <script>
     window.dewasper = new Dewasper();
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
+      window.addEventListener("load", async () => {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
         navigator.serviceWorker.register("/sw.js", {
           scope: "/"
         });
@@ -62,7 +66,7 @@
 
     <div class="loading-container">
       <div class="logo">
-        <span class="shadow-text">Shadow</span>
+        <span class="shadow-text">Ramazing</span>
       </div>
 
       <div class="loading-bar-container">
@@ -356,11 +360,9 @@
   <script src="/assets/js/search.js"></script>
   <script src="/assets/js/themes.js" type="module"></script>
   <script src="/assets/js/options.js"></script>
-  <script src="/assets/js/search.js"></script>
   <script src="/uv/uv.bundle.js"></script>
   <script src="/uv/uv.config.js"></script>
   <script src="/uv/uv.sw.js"></script>
-  <script src="/uv/uv.config.js"></script>
   <script src="/assets/js/panic.js"></script>
   <script src="/assets/js/tabs.js" type="module" defer></script>
   <script src="/assets/js/bookmarks.js" type="module"></script>

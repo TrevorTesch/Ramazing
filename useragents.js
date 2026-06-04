@@ -17,5 +17,5 @@ const requestListener = async function (req, res) {
 
 const server = http.createServer(requestListener);
 server.listen(port, () => {
-  console.log(`Shadow is running on port ${port}`);
+  console.log(`RAMazing is running on port ${port}`);
 });

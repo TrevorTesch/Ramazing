@@ -2,7 +2,7 @@ import { HistoryHelper } from "/assets/js/history_helper.js";
 import { SettingsManager } from "/assets/js/settings_manager.js";
 import { BareMuxConnection } from "/baremux/index.mjs";
 import { resolveUrl } from "/assets/js/dns.js";
-const searchInput = document.getElementById("__shadow-search-bar");
+const searchInput = document.getElementById("__shadow-search-bar") || document.getElementById("__ramazing-search-bar");
 const addTabButton = document.getElementById("add-tab");
 
 class Tab {
@@ -15,8 +15,8 @@ class Tab {
     this.connection = new BareMuxConnection("/baremux/worker.js");
     document.getElementById("uv-form").addEventListener("submit", (e) => {
       e.preventDefault();
-      searchInput.blur();
-      const url = searchInput.value;
+      if (searchInput) searchInput.blur();
+      const url = searchInput ? searchInput.value : "";
       tabs.load(url);
     });
     this.decode = (i) => {
@@ -419,8 +419,15 @@ class Tab {
 const tabs = new Tab();
 window.tabs = tabs;
 
-searchInput.onkeydown = (e) => { if (e.key !== "Enter") tabs.displaySearchSuggestions(e.key.length > 1 ? (e.key === "Backspace" ? searchInput.value.slice(0, -1) : searchInput.value) : searchInput.value + e.key); };
-searchInput.onfocus = () => { if (searchInput.value != "") tabs.displaySearchSuggestions(); };
+if (searchInput) {
+  searchInput.onkeydown = (e) => {
+    if (e.key !== "Enter") {
+      const suggestedValue = e.key.length > 1 ? (e.key === "Backspace" ? searchInput.value.slice(0, -1) : searchInput.value) : searchInput.value + e.key;
+      tabs.displaySearchSuggestions(suggestedValue);
+    }
+  };
+  searchInput.onfocus = () => { if (searchInput.value != "") tabs.displaySearchSuggestions(); };
+}
 document.onclick = (e) => { if (e.target !== searchInput) tabs.hideSuggestions(); };
 window.onmessage = (message) => { if (message.data === "hide-suggestions") tabs.hideSuggestions(); };
 
