@@ -2,7 +2,7 @@ import { HistoryHelper } from "/assets/js/history_helper.js";
 import { SettingsManager } from "/assets/js/settings_manager.js";
 import { BareMuxConnection } from "/baremux/index.mjs";
 import { resolveUrl } from "/assets/js/dns.js";
-const searchInput = document.getElementById("__shadow-search-bar");
+const searchInput = document.getElementById("__ramazing-search-bar");
 const addTabButton = document.getElementById("add-tab");
 
 class Tab {
@@ -106,7 +106,7 @@ class Tab {
     return true;
   }
 
-  async createTab(src = this.tabsArr.length === 0 ? "shadow://home" : "shadow://new", title) {
+  async createTab(src = this.tabsArr.length === 0 ? "ramazing://home" : "ramazing://new", title) {
     //Create a tab object to be put in the array
     const tab = {
       tab: document.createElement("div"),
@@ -142,8 +142,8 @@ class Tab {
     //Tab icon
     tab.img.className = "tab-icon";
     tab.img.alt = "Favicon"
-    if (tab.src.startsWith('shadow://')) {
-      const pageName = tab.src.replace('shadow://', '');
+    if (tab.src.startsWith('ramazing://')) {
+      const pageName = tab.src.replace('ramazing://', '');
       const safePageName = /^[a-zA-Z0-9_-]+$/.test(pageName) ? pageName : "new";
       const favicon = `/assets/imgs/icons/pages/${safePageName}.png`;
       tab.img.src = favicon;
@@ -232,41 +232,41 @@ class Tab {
     console.log(src)
     if (src === "about:blank") return src;
     if (src.startsWith("/uv/service")) return this.decode(src.replace(location.origin, "").replace(this.getPrefix(), ""));
-    if (src.startsWith("shadow://")) return src;
-    return "shadow://" + src.replace(".html", "").replace("/pages/", "").replace(/\//g, "")
+    if (src.startsWith("ramazing://")) return src;
+    return "ramazing://" + src.replace(".html", "").replace("/pages/", "").replace(/\//g, "")
 
-    //   if (src.startsWith("shadow://")) return src;
+    //   if (src.startsWith("ramazing://")) return src;
     //   switch (
     //   src.replace(location.href, "").replace(".html", "").replace("/pages/", "").replace(/\//g, "")
     //   ) {
     //     case "settings":
-    //       return "shadow://settings";
+    //       return "ramazing://settings";
     //     case "home":
-    //       return "shadow://home";
+    //       return "ramazing://home";
     //     case "new":
-    //       return "shadow://new";
+    //       return "ramazing://new";
     //     case "extensions":
-    //       return "shadow://extensions";
+    //       return "ramazing://extensions";
     //     case "extensionsmanage":
-    //       return "shadow://extensions/manage";
+    //       return "ramazing://extensions/manage";
     //     case "games":
     //     case "books":
-    //       return "shadow://games";
+    //       return "ramazing://games";
     //     case "history":
-    //       return "shadow://history";
+    //       return "ramazing://history";
     //     case "privacy":
-    //       return "shadow://privacy"
+    //       return "ramazing://privacy"
     //     case "ai":
-    //       return "shadow://ai"
+    //       return "ramazing://ai"
     //     case "credits":
-    //       return "shadow://credits"
+    //       return "ramazing://credits"
     //     default:
     //       
     //   }
   }
 
   async displaySearchSuggestions(value = searchInput.value) {
-    if (this.searchSuggestions && !value.startsWith("shadow://")) {
+    if (this.searchSuggestions && !value.startsWith("ramazing://")) {
       const suggestions = (await this.getSuggestions(value));
       suggestions.length = suggestions.length > 5 ? 5 : suggestions.length;
       const suggestionsContainer = document.getElementById('suggestions');
@@ -282,7 +282,7 @@ class Tab {
         elem.innerText = text;
         elem.dataset.url = text;
       });
-    } else if (value.startsWith("shadow://")) {
+    } else if (value.startsWith("ramazing://")) {
       document.getElementById('suggestions').classList.add("hidden");
     }
   }
@@ -290,8 +290,8 @@ class Tab {
   getTabInfo(i = this.activeTabIndex) {
     const src = this.parseUrl(i);
     let icon;
-    if (src.startsWith("shadow://")) {
-      icon = `/assets/imgs/icons/pages/${src.replace("shadow://", "")}.png`;
+    if (src.startsWith("ramazing://")) {
+      icon = `/assets/imgs/icons/pages/${src.replace("ramazing://", "")}.png`;
     } else {
       icon = `https://www.google.com/s2/favicons/imgs/icons?domain=${src}&sz=24`;
     }
@@ -401,7 +401,7 @@ class Tab {
   }
 
   toggleDevTools() {
-    this.tabsArr[this.activeTabIndex].iframe.contentWindow.postMessage("__shadow$toggleEruda");
+    this.tabsArr[this.activeTabIndex].iframe.contentWindow.postMessage("__ramazing$toggleEruda");
   }
 
   async setTransport(url, transport) {

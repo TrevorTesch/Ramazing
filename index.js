@@ -161,7 +161,7 @@ app.use(session({
     maxAge: 1000 * 60 * 30,
     path: '/'
   },
-  name: 'shadow.session'
+  name: 'ramazing.session'
 }));
 
 // Add security headers
@@ -175,7 +175,7 @@ app.use((req, res, next) => {
 
 const { generateToken, validateRequest } = doubleCsrf({
     getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || generateSecureToken(32),
-    cookieName: "shadow.csrf",
+    cookieName: "ramazing.csrf",
     size: 64,
     cookieOptions: {
         httpOnly: true,

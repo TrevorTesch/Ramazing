@@ -4,11 +4,11 @@ const modal = document.getElementById("modal");
 const closeButton = document.querySelector(".close");
 
 const defaultShortcuts = [
-  { name: "Roblox", url: "https://astra.pxi-fusion.com/embed/shadow/roblox", icon: "assets/imgs/icons/apps/2.png"},
-  { name: "Clash Royale", url: "https://astra.pxi-fusion.com/embed/shadow/clash-royale", icon: "assets/imgs/icons/apps/5.webp"},
-  { name: "Fortnite", url: "https://astra.pxi-fusion.com/embed/shadow/fortnite", icon: "assets/imgs/icons/apps/4.jpg"},
-  { name: "Brawl Stars", url: "https://astra.pxi-fusion.com/embed/shadow/brawl-stars", icon: "assets/imgs/icons/apps/6.jpg"},
-  { name: "G@me$", url: "shadow://books", icon: "assets/imgs/icons/apps/3.png" }
+  { name: "Roblox", url: "https://astra.pxi-fusion.com/embed/ramazing/roblox", icon: "assets/imgs/icons/apps/2.png"},
+  { name: "Clash Royale", url: "https://astra.pxi-fusion.com/embed/ramazing/clash-royale", icon: "assets/imgs/icons/apps/5.webp"},
+  { name: "Fortnite", url: "https://astra.pxi-fusion.com/embed/ramazing/fortnite", icon: "assets/imgs/icons/apps/4.jpg"},
+  { name: "Brawl Stars", url: "https://astra.pxi-fusion.com/embed/ramazing/brawl-stars", icon: "assets/imgs/icons/apps/6.jpg"},
+  { name: "G@me$", url: "ramazing://books", icon: "assets/imgs/icons/apps/3.png" }
 ];
 
 addShortcutButton.addEventListener("click", () => {

@@ -76,7 +76,7 @@ function abtblank() {
 
     if (!popup || popup.closed) {
       alert(
-        "Allow popups and redirects to hide this from showing up in your history.",
+        "For functionality and perzonalization reasons, this page needs to open a new tab. Please allow popups and redirects for this site. If you have already allowed popups and redirects, please disable any popup blockers you may have.",
       );
     } else {
       const doc = popup.document;

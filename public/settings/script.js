@@ -25,7 +25,7 @@ fetch('themes.json')
 
       themeDiv.addEventListener('mouseover', () => {
         themeDiv.style.background = theme.css['active-tab'];
-        themeDiv.style.boxShadow = `0 12px 24px ${theme.css['accent-glow']}`;
+        themeDiv.style.boxRamazing = `0 12px 24px ${theme.css['accent-glow']}`;
         themeDiv.style.borderColor = theme.css['accent'];
         afterDiv.style.transform = 'scaleX(1)';
         afterDiv.style.transformOrigin = 'bottom left';
@@ -33,7 +33,7 @@ fetch('themes.json')
 
       themeDiv.addEventListener('mouseleave', () => {
         themeDiv.style.background = theme.css['secondary'];
-        themeDiv.style.boxShadow = `0 4px 6px rgba(0, 0, 0, 0.1)`;
+        themeDiv.style.boxRamazing = `0 4px 6px rgba(0, 0, 0, 0.1)`;
         themeDiv.style.borderColor = theme.css['border'];
         afterDiv.style.transform = 'scaleX(0)';
         afterDiv.style.transformOrigin = 'bottom right';

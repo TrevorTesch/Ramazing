@@ -1,4 +1,4 @@
-//I really have no clue where this came from, I updated it a bit for shadow:// urls, but uh thanks whoever made it
+//I really have no clue where this came from, I updated it a bit for ramazing:// urls, but uh thanks whoever made it
 
 "use strict";
 
@@ -11,10 +11,10 @@
 function search(input, template, backend) {
   let url;
 
-  //Local shadow:// urls
+  //Local ramazing:// urls
   try {
-    if (input.includes("shadow://")) {
-      url = "/pages/" + input.replace("shadow://", "") + ".html";
+    if (input.includes("ramazing://")) {
+      url = "/pages/" + input.replace("ramazing://", "") + ".html";
       return url;
     }
   } catch (err) {}

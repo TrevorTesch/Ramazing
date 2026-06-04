@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 
 /**
  * 1. ENCODE DATA (For Tabs/URLs)
- * We use Base64 here because the ShadowV3 frontend can read it easily.
+ * We use Base64 here because the RamazingV3 frontend can read it easily.
  * This will fix the "Tabs won't open" issue.
  */
 export function encryptData(data) {
