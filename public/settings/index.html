@@ -47,28 +47,53 @@
   <div id="content">
     <div id="general-content">
       <div class="content-title">General</div>
-      <!-- Tabs Cloak -->
-      <div class="settings-section">
-        <h2 class="section-title">Tab Cloak</h2>
-        <div class="section-content">
-          <div class="buttons">
-            <input id="title" class="input-field" placeholder="Title" onkeyup="setTitle(this.value)" />
-            <input id="icon" class="input-field" placeholder="Favicon" onkeyup="setFavicon(this.value.trim())" />
-          </div>
-          <p class="section-content">Ready Made Cloaks</p>
-          <div class="buttons">
-            <select name="Readymade Cloaks" id="premadecloaks" class="input-field" title="Cloaks">
-              <option value="search">Google Search</option>
-              <option value="drive">Google Drive</option>
-              <option value="youtube">YouTube</option>
-              <option value="gmail">Gmail</option>
-              <option value="calendar">Google Calendar</option>
-              <option value="meets">Google Meet</option>
-              <option value="classroom">Google Classroom</option>
-              <option value="canvas">Canvas</option>
-              <option value="zoom">Zoom</option>
-              <option value="khan">Khan Academy</option>
-            </select>
+    <!-- The HTML Dropdown Menu -->
+<label for="cloak-select">Choose your cloak:</label>
+<select id="cloak-select" onchange="changeCloak()">
+    <option value="default">Select a Cloak...</option>
+    <option value="khan">Khan Academy</option>
+    <option value="docs">Google Docs</option>
+    <option value="canvas">Canvas LMS</option>
+</select>
+
+<script>
+function changeCloak() {
+    const choice = document.getElementById("cloak-select").value;
+    
+    // Store their choice in the browser memory so it stays when they refresh
+    localStorage.setItem("savedCloak", choice);
+    
+    // Apply the cloak immediately
+    applyCloaking(choice);
+}
+
+function applyCloaking(cloakType) {
+    const favicon = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    favicon.rel = 'icon';
+
+    if (cloakType === "khan") {
+        document.title = "Khan Academy | Free Online Courses";
+        favicon.href = "https://khanacademy.org";
+    } else if (cloakType === "docs") {
+        document.title = "Google Docs";
+        favicon.href = "https://gstatic.com";
+    } else if (cloakType === "canvas") {
+        document.title = "Dashboard - Canvas";
+        favicon.href = "https://cloudfront.net";
+    }
+    
+    document.getElementsByTagName('head')[0].appendChild(favicon);
+}
+
+// Automatically load their saved cloak when they open the page
+window.onload = function() {
+    const saved = localStorage.getItem("savedCloak");
+    if (saved) {
+        document.getElementById("cloak-select").value = saved;
+        applyCloaking(saved);
+    }
+}
+</script>
             <div class="select-buttons">
               <button class="icon-button" onclick="setCloak()">
                 <svg xmlns="http://www.w3.org/2000/svg" style="margin-right: 5px;"
