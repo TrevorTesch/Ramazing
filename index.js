@@ -169,6 +169,21 @@ app.use(session({
   name: 'shadow.session'
 }));
 
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET || process.env.SESSION_SECRET || "csrf-secret",
+  cookieName: "__Host-psifi.x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+    path: "/"
+  },
+  size: 64,
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"]
+});
+
+app.use(doubleCsrfProtection);
+
 // Add security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -226,7 +241,7 @@ app.get('/csrf-token', (req, res) => {
 
 
 const models = ["gpt-5-mini", "shuttle-3.5", "gpt-5"];
-app.post('/ask', requireSession, csrfProtection, async (req, res) => {
+app.post('/ask', requireSession, doubleCsrfProtection, async (req, res) => {
     const { messages, model } = req.body;
     const temperature = req.body.temperature || 0.7;
     const max_tokens = req.body.max_tokens || 512;
