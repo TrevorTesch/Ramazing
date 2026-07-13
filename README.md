@@ -1,5 +1,5 @@
 # Ramazing
-**Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update, your in good hands. **THE BEST TABBED PROXY.**
+**Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update. You are in good hands. Just run in the terminal (npm install && npm start) to run it. **THE BEST TABBED PROXY.**
 
 ---
 
@@ -17,6 +17,7 @@
 - 🎮 Games. The games are hosted files, not <b>proxied</b>.
 - 📋 Easy & Accessible Menu to access pages
 - 🔑 AES-256 (government-grade) encryption is better and fixed.
+- ⤵️ 
 
 ## Deployment
 <a href="https://render.com/deploy?repo=https://github.com/ShadowDevLabs/ShadowV3">
