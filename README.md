@@ -1,5 +1,5 @@
 # Ramazing
-**Ramazing** is a secure, unique proxy, with new encryption and cool features regardinng the big update, your in good hands. **THE BEST TABBED PROXY.**
+**Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update, your in good hands. **THE BEST TABBED PROXY.**
 
 ---
 
