@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-  <script src="/assets/js/themes.js" type="module"></script>
+  <script src="/Ramazing/assets/js/themes.js" type="module"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/settings.css" />
-  <link rel="stylesheet" href="/css/themes.css" />
+  <link rel="stylesheet" href="/Ramazing/css/settings.css" />
+  <link rel="stylesheet" href="/Ramazing/css/themes.css" />
   <title>Settings</title>
-  <link rel="icon" href="/assets/imgs/icons/logo.png" type="image/x-icon" />
-  <script src="/assets/js/settings.js" type="module"></script>
-  <script src="/uv/uv.config.js"></script>
+  <link rel="icon" href="/Ramazing/assets/imgs/icons/logo.png" type="image/x-icon" />
+  <script src="/Ramazing/assets/js/settings.js" type="module"></script>
+  <script src="/Ramazing/uv/uv.config.js"></script>
 </head>
 
 <body onload="try {showContent('general'); parent.updateOmni(); parent.setTab();} catch(_){}">
@@ -367,11 +367,11 @@
       </div>
     </div>
     <script type="module">
-      import { SettingsManager } from "/assets/js/settings_manager.js"
-      import { checkWispUrl } from "/assets/js/wispchecker.js"
-      import { changeTheme as _changeTheme, applyCustomTheme as _applyCustomTheme } from "/assets/js/themes.js"
-      import { HistoryHelper } from "/assets/js/history_helper.js"
-      import { clearAllSiteSessionData } from "/assets/js/site-session-cache.js"
+      import { SettingsManager } from "/Ramazing/assets/js/settings_manager.js"
+      import { checkWispUrl } from "/Ramazing/assets/js/wispchecker.js"
+      import { changeTheme as _changeTheme, applyCustomTheme as _applyCustomTheme } from "/Ramazing/assets/js/themes.js"
+      import { HistoryHelper } from "/Ramazing/assets/js/history_helper.js"
+      import { clearAllSiteSessionData } from "/Ramazing/assets/js/site-session-cache.js"
 
       window.changeTheme = _changeTheme;
       window.applyCustomTheme = _applyCustomTheme;
@@ -506,8 +506,8 @@
         "searchSuggestionsDropdown",
       ).addEventListener("change", updateSuggestions);
     </script>
-    <script src="/assets/js/options.js"></script>
-    <script src="/assets/js/notifications.js"></script>
+    <script src="/Ramazing/assets/js/options.js"></script>
+    <script src="/Ramazing/assets/js/notifications.js"></script>
     <script src="script.js"></script>
 </body>
 
