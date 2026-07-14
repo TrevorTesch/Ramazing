@@ -17,7 +17,7 @@
 - 🎮 Games. The games are hosted files, not <b>proxied</b>.
 - 📋 Easy & Accessible Menu to access pages
 - 🔑 AES-256 (government-grade) encryption is better and fixed.
-- ⤵️ 
+- ⤵️ More To Come in The future.
 
 ## Deployment
 <a href="https://render.com/deploy?repo=https://github.com/ShadowDevLabs/ShadowV3">
