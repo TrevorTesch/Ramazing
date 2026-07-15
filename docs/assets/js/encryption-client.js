@@ -127,7 +127,6 @@ export async function decryptAndRetrieve(key) {
 export function setEncryptionPassword(password) {
   validatePassword(password);
   encryptionPassword = password;
-  sessionStorage.setItem('enc_pwd', password);
 }
 
 /**
