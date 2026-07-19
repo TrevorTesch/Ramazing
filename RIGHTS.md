@@ -1,2 +1,2 @@
 **Your rights**
-YOU have every rights to make a copy, and distribute your own, modify and sell. There is never anything stopping that. I had a few ask me: "Can I have my own browser?". I cant do that because it will take months. If you want to go ahead.
+YOU have every right to make a copy, and distribute your own, modify and sell. There is never anything stopping that. I had a few ask me: "Can I have my own browser?". I cant do that because it will take months. If you want to go ahead.
