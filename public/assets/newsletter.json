@@ -1,0 +1,16 @@
+{
+  "announcements": {
+    "title": "Welcome to Ramazing Newsletter!",
+    "content": "Stay updated with the latest changes and improvements to Ramazing Browser.",
+    "date": "2026-07-19"
+  },
+  "updates": [
+    {
+      "id": 1,
+      "date": "2026-07-19",
+      "title": "Privacy Overhaul - Removed External Dependencies",
+      "content": "Major privacy improvement! We've removed all unused external dependencies including CDN libraries. Your browsing experience is now more private than ever.",
+      "important": true
+    }
+  ]
+}
