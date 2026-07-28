@@ -14,21 +14,19 @@ function validatePassphrase(password) {
 }
 
 function toBase64(bytes) {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(bytes).toString('base64');
+  // Safe environment check using globalThis to prevent reference errors
+  if (typeof globalThis.Buffer !== 'undefined') {
+    return globalThis.Buffer.from(bytes).toString('base64');
   }
 
-  let binary = '';
-  const length = bytes.byteLength;
-  for (let i = 0; i < length; i += 1) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
+  // Modern, reliable binary conversion map to prevent string padding corruption
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+  return btoa(binString);
 }
 
 function fromBase64(value) {
-  if (typeof Buffer !== 'undefined') {
-    return Uint8Array.from(Buffer.from(value, 'base64'));
+  if (typeof globalThis.Buffer !== 'undefined') {
+    return Uint8Array.from(globalThis.Buffer.from(value, 'base64'));
   }
 
   const binary = atob(value);
