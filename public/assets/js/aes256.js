@@ -1,11 +1,18 @@
 const runtimeCrypto = globalThis.crypto;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-const SALT_LENGTH = 16;
-const IV_LENGTH = 12;
+
+const SALT_LENGTH = 16; // bytes
+const IV_LENGTH = 12;   // bytes (recommended for GCM)
 const DERIVATION_ITERATIONS = 600_000;
+
 const VERSION = 'v2';
 const MIN_PASSPHRASE_LENGTH = 12;
+
+// Keep payload format compatible with your existing implementation:
+// VERSION + ':' (3 bytes for 'v2:') + salt(16) + iv(12) + ciphertext
+const HEADER_BYTES = encoder.encode(`${VERSION}:`);
+const MIN_PAYLOAD_BYTES = HEADER_BYTES.length + SALT_LENGTH + IV_LENGTH + 1;
 
 function validatePassphrase(password) {
   if (typeof password !== 'string' || password.length < MIN_PASSPHRASE_LENGTH) {
@@ -14,13 +21,12 @@ function validatePassphrase(password) {
 }
 
 function toBase64(bytes) {
-  // Safe environment check using globalThis to prevent reference errors
   if (typeof globalThis.Buffer !== 'undefined') {
     return globalThis.Buffer.from(bytes).toString('base64');
   }
 
-  // Modern, reliable binary conversion map to prevent string padding corruption
-  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join("");
+  // Convert bytes -> binary string safely
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
   return btoa(binString);
 }
 
@@ -70,20 +76,39 @@ export async function encryptWithAes256(plainText, password) {
 
   const salt = runtimeCrypto.getRandomValues(new Uint8Array(SALT_LENGTH));
   const iv = runtimeCrypto.getRandomValues(new Uint8Array(IV_LENGTH));
+
   const key = await deriveKey(password, salt);
   const encoded = encoder.encode(plainText);
-  const encrypted = await runtimeCrypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
 
-  const payload = new Uint8Array(
-    VERSION.length + 1 + SALT_LENGTH + IV_LENGTH + encrypted.byteLength
+  // AES-GCM encryption returns ciphertext+authTag (WebCrypto behavior)
+  const encryptedBuffer = await runtimeCrypto.subtle.encrypt(
+    { name: 'AES-GCM', iv },
+    key,
+    encoded
   );
-  const header = encoder.encode(`${VERSION}:`);
-  payload.set(header, 0);
-  payload.set(salt, header.byteLength);
-  payload.set(iv, header.byteLength + salt.byteLength);
-  payload.set(new Uint8Array(encrypted), header.byteLength + salt.byteLength + iv.byteLength);
+
+  const encrypted = new Uint8Array(encryptedBuffer);
+
+  // Build payload: header + salt + iv + ciphertext
+  const payload = new Uint8Array(
+    HEADER_BYTES.length + SALT_LENGTH + IV_LENGTH + encrypted.byteLength
+  );
+
+  payload.set(HEADER_BYTES, 0);
+  payload.set(salt, HEADER_BYTES.length);
+  payload.set(iv, HEADER_BYTES.length + SALT_LENGTH);
+  payload.set(encrypted, HEADER_BYTES.length + SALT_LENGTH + IV_LENGTH);
 
   return toBase64(payload);
+}
+
+function constantTimeHeaderEquals(packed, offsetBytes, headerBytes) {
+  if (packed.length < offsetBytes + headerBytes.length) return false;
+  let ok = 0;
+  for (let i = 0; i < headerBytes.length; i += 1) {
+    ok |= packed[offsetBytes + i] ^ headerBytes[i];
+  }
+  return ok === 0;
 }
 
 export async function decryptWithAes256(payload, password) {
@@ -93,19 +118,32 @@ export async function decryptWithAes256(payload, password) {
   validatePassphrase(password);
 
   const packed = fromBase64(payload);
-  const header = decoder.decode(packed.subarray(0, 3));
-  if (header !== `${VERSION}:`) {
+
+  if (packed.length < MIN_PAYLOAD_BYTES) {
+    throw new Error('Unsupported payload format (too short).');
+  }
+
+  // Validate header bytes (compatible with your v2 format)
+  if (!constantTimeHeaderEquals(packed, 0, HEADER_BYTES)) {
     throw new Error('Unsupported payload version.');
   }
 
-  const saltStart = 3;
+  const saltStart = HEADER_BYTES.length;
   const salt = packed.subarray(saltStart, saltStart + SALT_LENGTH);
+
   const ivStart = saltStart + SALT_LENGTH;
   const iv = packed.subarray(ivStart, ivStart + IV_LENGTH);
+
   const encrypted = packed.subarray(ivStart + IV_LENGTH);
+
   const key = await deriveKey(password, salt);
+
   try {
-    const decrypted = await runtimeCrypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, encrypted);
+    const decrypted = await runtimeCrypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encrypted
+    );
     return decoder.decode(decrypted);
   } catch (error) {
     throw new Error('Authentication failed: payload could not be decrypted.');
