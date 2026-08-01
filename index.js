@@ -13,9 +13,12 @@ import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { join } from "path";
-import { users, port, brokenSites } from "./config.js";
+import { users, port, brokenSites, allowedUpstreamHosts } from "./config.js";
 import session from "express-session";
 import { encryptData, decryptData, generateToken as generateSecureToken, verifyPassword, hashPassword } from "./encryption.js";
+import { validateUpstream } from './lib/ssrf-protect.js';
+import { safeLog } from './lib/safe-log.js';
+import https from 'https';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -39,7 +42,7 @@ if (Object.keys(users).length > 0) {
     console.log('✓ Authentication enabled');
 }
 app.use(express.static(publicPath, { maxAge: 604800000 })); //1 week
-app.use('/books/files/', (req, res) => {
+app.use('/books/files/', async (req, res) => {
     const baseUrl = new URL("http://phantom.lol/books/files/");
     const routePath = req.path.replace(/^\/books\/files\/?/, "");
 
@@ -47,7 +50,7 @@ app.use('/books/files/', (req, res) => {
     try {
         relativePath = decodeURIComponent(routePath);
     } catch {
-        res.status(400).end("Invalid file path");
+        res.status(400).json({ error: 'invalid_path' });
         return;
     }
 
@@ -60,7 +63,7 @@ app.use('/books/files/', (req, res) => {
         relativePath.startsWith("//") ||
         /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(relativePath)
     ) {
-        res.status(400).end("Invalid file path");
+        res.status(400).json({ error: 'invalid_path' });
         return;
     }
 
@@ -69,7 +72,7 @@ app.use('/books/files/', (req, res) => {
         sourceUrl.origin !== baseUrl.origin ||
         !sourceUrl.pathname.startsWith("/books/files/")
     ) {
-        res.status(400).end("Invalid file path");
+        res.status(400).json({ error: 'invalid_path' });
         return;
     }
 
@@ -78,24 +81,82 @@ app.use('/books/files/', (req, res) => {
         sourceUrl.search = queryString;
     }
 
-    const pathSegments = relativePath.split('/').filter(Boolean);
-    const safeRelativePath = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
-    const upstreamPath = `/books/files/${safeRelativePath}${queryString ? `?${queryString}` : ""}`;
+    // Validate upstream against allowlist and private IPs
+    try {
+        await validateUpstream(sourceUrl.href, allowedUpstreamHosts);
+    } catch (err) {
+        safeLog('warn', { route: '/books/files', upstream: sourceUrl.hostname, errorCode: err.code || 'SSRF_FAIL' });
+        return res.status(403).json({ error: 'ssrf_blocked', code: err.code || 'SSRF_BLOCKED' });
+    }
 
-    const requestOptions = {
-        protocol: "http:",
-        hostname: "phantom.lol",
-        method: "GET",
-        path: upstreamPath
+    // Build sanitized headers (only a small allowlist)
+    const allowedReqHeaders = ['user-agent', 'accept', 'accept-language', 'range'];
+    const outHeaders = {};
+    for (const h of allowedReqHeaders) {
+        if (req.headers[h]) outHeaders[h] = req.headers[h];
+    }
+    // set host to upstream host explicitly
+    outHeaders['host'] = sourceUrl.host;
+
+    // Determine module and options
+    const isHttps = sourceUrl.protocol === 'https:';
+    const transport = isHttps ? https : http;
+    const upstreamOpts = {
+        method: 'GET',
+        protocol: sourceUrl.protocol,
+        hostname: sourceUrl.hostname,
+        port: sourceUrl.port || (isHttps ? 443 : 80),
+        path: sourceUrl.pathname + (sourceUrl.search || ''),
+        headers: outHeaders,
+        timeout: Number(process.env.PROXY_CONNECT_TIMEOUT_MS || 5000)
     };
 
-    http.get(requestOptions, (sourceResponse) => {
-        res.writeHead(sourceResponse.statusCode, sourceResponse.headers);
-        sourceResponse.pipe(res);
-    }).on('error', (err) => {
-        res.statusCode = 500;
-        res.end(`Error fetching file: ${err.message}`);
-    });
+    try {
+        const upstreamReq = transport.request(upstreamOpts, upstreamRes => {
+            // Propagate safe subset of headers
+            const hopByHop = new Set(['connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade']);
+            const headers = {};
+            for (const [k,v] of Object.entries(upstreamRes.headers || {})) {
+                if (!hopByHop.has(k.toLowerCase())) headers[k] = v;
+            }
+
+            res.writeHead(upstreamRes.statusCode || 502, headers);
+
+            const maxBytes = parseInt(process.env.PROXY_MAX_BODY_BYTES || ( (process.env.PROXY_MAX_BODY || '2mb').toLowerCase().endsWith('mb') ? Number(process.env.PROXY_MAX_BODY.replace(/mb/i,'').trim())*1024*1024 : 2*1024*1024 ), 10);
+            let bytes = 0;
+            const start = Date.now();
+
+            upstreamRes.on('data', chunk => {
+                bytes += chunk.length;
+                if (bytes > maxBytes) {
+                    safeLog('warn', { route: '/books/files', upstream: sourceUrl.hostname, errorCode: 'UPSTREAM_MAX_BYTES' });
+                    upstreamReq.destroy();
+                    try { res.destroy(); } catch {}
+                    return;
+                }
+                res.write(chunk);
+            });
+            upstreamRes.on('end', () => {
+                const latencyMs = Date.now() - start;
+                safeLog('info', { route: '/books/files', upstream: sourceUrl.hostname, status: upstreamRes.statusCode, latencyMs, bytes });
+                res.end();
+            });
+        });
+
+        upstreamReq.on('timeout', () => {
+            safeLog('warn', { route: '/books/files', upstream: sourceUrl.hostname, errorCode: 'UPSTREAM_TIMEOUT' });
+            upstreamReq.destroy();
+            try { res.status(504).json({ error: 'upstream_timeout' }); } catch {}
+        });
+        upstreamReq.on('error', (err) => {
+            safeLog('error', { route: '/books/files', upstream: sourceUrl.hostname, errorCode: 'UPSTREAM_ERROR' });
+            try { res.status(502).json({ error: 'upstream_error' }); } catch {}
+        });
+        upstreamReq.end();
+    } catch (err) {
+        safeLog('error', { route: '/books/files', upstream: sourceUrl.hostname, errorCode: 'REQUEST_SETUP_ERROR' });
+        res.status(500).json({ error: 'internal_error' });
+    }
 });
 app.use("/epoxy/", express.static(epoxyPath));
 app.use("/libcurl/", express.static(libcurlPath));
@@ -272,48 +333,4 @@ app.get("/v1/api/user-agents", async (req, res) => {
     text = await text.text();
     const $ = cheerio.load(text);
     res.send(
-        $("#most-common-desktop-useragents-json-csv > div:eq(0) > textarea").val(),
-    );
-});
-
-app.use((req, res) => {
-    res.status(404);
-    res.sendFile(join(publicPath, "404.html"));
-});
-
-server.on("request", (req, res) => {
-    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-    app(req, res);
-});
-
-server.on("upgrade", (req, socket, head) => {
-    if (req.url.endsWith("/wisp/"))
-        wisp.routeRequest(req, socket, head);
-    else socket.end();
-});
-
-server.on("listening", () => {
-    const address = server.address();
-    console.log(
-        "\n\n\n\x1b[35m\x1b[2m\x1b[1m%s\x1b[0m\n",
-        `Ramazing ${version} has started!\nSprinting on port ${address.port}`,
-    );
-
-    setTimeout(function () {
-        console.log("\n");
-    }, 750);
-    setTimeout(function () {
-        console.log("\n");
-    }, 1000);
-    setTimeout(function () {
-        console.log(`
-┌────────────┬─────────────┬────────────┐
-│ Wisp       │ Site        │ API's      │
-├────────────┼─────────────┼────────────┤
-│ \x1b[32mrunning   \x1b[0m │ \x1b[32mrunning    \x1b[0m │ \x1b[32mrunning    \x1b[0m│
-└────────────┴─────────────┴────────────┘
-`);
-    }, 1500);
-});
-
-server.listen(process.argv[2] || port);
+        $(
