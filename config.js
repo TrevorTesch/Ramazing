@@ -24,13 +24,4 @@ const brokenSites = async () => {
     return sites;
 };
 
-// Allowed upstream hosts (SSRF allowlist) - must be set in environment variable ALLOWED_UPSTREAM_HOSTS as a comma-separated list.
-const rawAllowed = (process.env.ALLOWED_UPSTREAM_HOSTS || '').trim();
-if (!rawAllowed) {
-    // Fail-closed default: refuse to run if allowlist isn't configured
-    throw new Error('ALLOWED_UPSTREAM_HOSTS is not configured. For safety, the server will not start. Set ALLOWED_UPSTREAM_HOSTS=phantom.lol (or other hosts)');
-}
-
-const allowedUpstreamHosts = rawAllowed.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-
-export { users, port, brokenSites, allowedUpstreamHosts };
+export { users, port, brokenSites };
