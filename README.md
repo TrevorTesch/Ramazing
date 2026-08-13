@@ -1,6 +1,6 @@
 
-# Shadow Browser V3
-**ShadowV3** is a fast and feature-rich tab proxy designed with performance and user experience at its core. Finding proxies with smooth, functional tabs can be challenging, but we make it effortless. **THE BEST TABBED PROXY.**
+# Ramazing
+**Ramazing** is a fast and feature-rich tab proxy designed with performance and user experience at its core. Finding proxies with smooth, functional tabs can be challenging, but we make it effortless. **THE BEST TABBED PROXY.**
 
 ---
 
@@ -33,12 +33,3 @@
 <a href="https://app.koyeb.com/deploy?type=git&repository=github.com/ShadowDevLabs/Shadowv3">
   <img src="https://github.com/BinBashBanana/deploy-buttons/blob/main/buttons/official/koyeb.svg" alt="Deploy to Koyeb">
 </a>
-
-# Credits
-- [NC](https://github.com/NCCoder2) ｜Developer
-- [NotPeak](https://github.com/NottPeak)｜Developer
-- [Ultraviolet](https://github.com/titaniumnetwork-dev/Ultraviolet)｜Proxy
-- [Dynamic](https://github.com/NebulaServices/Dynamic)｜Proxy
-
-# [Join the Discord](https://discord.gg/goshadow)
-
