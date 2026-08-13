@@ -1,6 +1,5 @@
-
 # Ramazing
-**Ramazing** is a fast and feature-rich tab proxy designed with performance and user experience at its core. Finding proxies with smooth, functional tabs can be challenging, but we make it effortless. **THE BEST TABBED PROXY.**
+**Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update. You are in good hands. Just run in the terminal (npm install && npm start) to run it. **THE BEST TABBED PROXY.**
 
 ---
 
@@ -8,28 +7,28 @@
 - 📈 Update UV to v3, uses eproxy/baremux.
 - 🔧 Improved tabs.js, more optimized, better handling.
 - 💻 Rewrote tabs.js code from scratch for optimizations.
-- 🌐 Favicon Updates when a new URL is pressed.
-- ⏳ Neat Loading Screen
+- 🌐 Favicon Will Get Changed in Ramazing.
+- ⏳ Loading Screen
 - 🚀 Improved Load Times. Overall Site & Proxy
 - 🎨 New Look. The user interface has been completely redone
 - 🗂️ Shortcuts on New Tab Page
 - 📚 Overhauled on Themes, Bookmarks, and all scripts.
 - 🌈 Added tons of new & working themes.
-- 🎮 Games have been added. The games are hosted files, not proxied.
+- 🎮 Games. The games are hosted files, not <b>proxied</b>.
 - 📋 Easy & Accessible Menu to access pages
-- 🔗 Added direct page access. Ex: shadow://settings shadow://new
-- 🔄 WispURL Change
+- 🔑 AES-256 (government-grade) encryption is better and fixed.
+- ⤵️ More To Come in The future.
 
 ## Deployment
-<a href="https://render.com/deploy?repo=https://github.com/ShadowDevLabs/ShadowV3">
+<a href="https://render.com/deploy?repo=https://github.com/trevortesch/ramazing">
   <img src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/main/buttons/official/render.svg" alt="Deploy on Render">
 </a>
-<a href="https://app.cyclic.sh/api/app/deploy/ShadowDevLabs/ShadowV3">
+<a href="https://app.cyclic.sh/api/app/deploy/trevortesch/ramazing">
   <img src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/main/buttons/official/cyclic.svg" alt="Deploy on Cyclic">
 </a>
-<a href="https://vercel.com/new/clone?repositoryurl=https://github.com/ShadowDevLabs/ShadowV3">
+<a href="https://vercel.com/new/clone?repositoryurl=https://github.com/trevortesch/ramazing">
   <img src="https://raw.githubusercontent.com/BinBashBanana/deploy-buttons/main/buttons/official/vercel.svg" alt="Deploy with Vercel">
 </a>
-<a href="https://app.koyeb.com/deploy?type=git&repository=github.com/ShadowDevLabs/Shadowv3">
+<a href="https://app.koyeb.com/deploy?type=git&repository=github.com/trevortesch/ramazing">
   <img src="https://github.com/BinBashBanana/deploy-buttons/blob/main/buttons/official/koyeb.svg" alt="Deploy to Koyeb">
 </a>
