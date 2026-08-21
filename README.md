@@ -1,5 +1,5 @@
 # Ramazing
-Bulit from ShadowV3, **Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update. You are in good hands. Just run in the terminal (npm install && npm start) to run it. **THE BEST TABBED PROXY.**
+Built from ShadowV3, **Ramazing** is a secure, unique proxy, with new encryption and cool features regarding the big update. You are in good hands. Just run in the terminal (npm install && npm start) to run it. **THE BEST TABBED PROXY.**
 
 ---
 
