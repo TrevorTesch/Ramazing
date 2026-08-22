@@ -1,6 +1,5 @@
 import express from "express";
 import basicAuth from "express-basic-auth"
-import rateLimit from "express-rate-limit";
 import { server as wisp } from "@mercuryworkshop/wisp-js/server";
 import http from "http";
 import cookieParser from 'cookie-parser';
@@ -24,10 +23,6 @@ const version = process.env.npm_package_version;
 const publicPath = fileURLToPath(new URL("./public/", import.meta.url));
 const app = express();
 const server = createServer();
-const privacyRateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-});
 
 // Enable basic auth if users are configured
 if (Object.keys(users).length > 0) {
@@ -101,7 +96,7 @@ app.use("/epoxy/", express.static(epoxyPath));
 app.use("/libcurl/", express.static(libcurlPath));
 app.use("/baremux/", express.static(baremuxPath));
 app.use("/uv/", express.static(uvPath));
-app.get("/privacy", privacyRateLimiter, (req, res) => res.sendFile(join(publicPath, "privacy.html")));
+app.get("/privacy", (req, res) => res.sendFile(join(publicPath, "privacy.html")));
 
 app.get("/v1/api/version", (req, res) => {
     if (req.query.v && req.query.v != version) {
