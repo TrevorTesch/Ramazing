@@ -32,9 +32,3 @@ Built from ShadowV3, **Ramazing** is a secure, unique proxy, with new encryption
 <a href="https://app.koyeb.com/deploy?type=git&repository=github.com/trevortesch/ramazing">
   <img src="https://github.com/BinBashBanana/deploy-buttons/blob/main/buttons/official/koyeb.svg" alt="Deploy to Koyeb">
 </a>
-
-## Notice
-
-I will be making this a read-only (archived) repo for a minute. If you need to run this, either fork the repo (recommended), or go <a href="https://github.com/PlatinumDevNetwork/Ramazing">here</a>
-
-This will not be permanent.
